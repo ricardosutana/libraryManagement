@@ -5,16 +5,14 @@ import java.time.LocalDate;
 public class Jornal extends Document {
     private String chiefEditor;
 
-    public Jornal(String title, String author, LocalDate datePublish, String chiefEditor) {
-        super(title, author, datePublish);
-        this.chiefEditor = chiefEditor;
-    }
-
     public String getChiefEditor() {
         return chiefEditor;
     }
 
     public void setChiefEditor(String chiefEditor) {
+        if (chiefEditor == null || chiefEditor.isEmpty()) {
+            throw new IllegalArgumentException("Editor is mandatory");
+        }
         this.chiefEditor = chiefEditor;
     }
 

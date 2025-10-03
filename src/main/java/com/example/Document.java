@@ -12,25 +12,26 @@ public class Document {
     public Document() {
     }
 
-    public Document(String title, String author, LocalDate datePublish) {
-        this.title = title;
-        this.author = author;
-        this.datePublish = datePublish;
-    }
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
+        if (id == null|| id<0 ){
+            throw new IllegalArgumentException("ID is mandatory");
+        }
         this.id = id;
     }
 
     public String getTitle() {
+
         return title;
     }
 
     public void setTitle(String title) {
+        if (title == null || title.isEmpty()){
+            throw new IllegalArgumentException("Title is mandatory");
+            }
         this.title = title;
     }
 
@@ -39,6 +40,9 @@ public class Document {
     }
 
     public void setAuthor(String author) {
+        if (author == null || author.isEmpty()) {
+            throw new IllegalArgumentException("Author is mandatory");
+        }
         this.author = author;
     }
 

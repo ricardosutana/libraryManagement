@@ -7,24 +7,24 @@ import java.time.LocalDate;
 public class Book extends Document implements Availability {
 
     private String edition;
-    private boolean available;
+    private boolean available = true;
 
     public Book() {
     }
 
-    public Book(String title, String author, LocalDate datePublish, String edition, boolean available) {
-        super(title, author, datePublish);
-        this.edition = edition;
-        this.available = available;
-    }
 
     public String getEdition() {
         return edition;
     }
 
     public void setEdition(String edition) {
+        if (edition == null || edition.isEmpty()) {
+            throw new IllegalArgumentException("Edition is mandatory");
+        }
+
         this.edition = edition;
     }
+
 
 
     @Override
