@@ -28,7 +28,7 @@ public class Magazine extends Document implements Availability {
 
     }
     @Override
-    public void land() {
+    public void lend() {
         if(!available){
             available = true;
             System.out.println("Magazine :"+getTitle()+" being landed");

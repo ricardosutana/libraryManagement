@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import com.example.LibraryService;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -13,8 +14,6 @@ public class Main {
         ArrayList<Book>  bookArrayList = new ArrayList<>();
         ArrayList<Jornal> jornalArrayList = new ArrayList<>();
         ArrayList<Magazine> magazineArrayList = new ArrayList<>();
-
-        HashSet<Book> bookHashSet =new HashSet<>();
 
 
         //book objects
@@ -27,8 +26,6 @@ public class Main {
 
         bookArrayList.add(book1);
 
-        bookHashSet.add(book1);
-        System.out.println("tamanho array: "+bookArrayList.size());
 
         Book book2 = new Book();
         book2.setId(102);
@@ -39,8 +36,7 @@ public class Main {
 
         bookArrayList.add(book2);
 
-        bookHashSet.add(book2);
-        System.out.println("tamanho array: "+bookArrayList.size());
+
 
         Book book3 = new Book();
         book3.setId(103);
@@ -51,9 +47,40 @@ public class Main {
 
         bookArrayList.add(book3);
 
-        bookHashSet.add(book3);
-        System.out.println("tamanho array: "+bookArrayList.size());
+        //LibraryService Usage
 
+        System.out.println("\n Catálogo inicial:");
+        bookArrayList.forEach(b -> System.out.println(b.getTitle() + " - disponível: " + b.isAvailable()));
+
+        // --- BUSCAR LIVROS POR AUTOR ---
+        System.out.println("\n Livros do autor 'Joshua Bloch':");
+        List<Book> livrosDoAutor = LibraryService.findBooksByAuthor(bookArrayList, "Joshua Bloch");
+        livrosDoAutor.forEach(b -> System.out.println(b.getTitle()));
+
+        // --- CONTAR LIVROS DISPONÍVEIS ---
+        long disponiveis = LibraryService.countAvailableBooks(bookArrayList);
+        System.out.println("\n Quantidade de livros disponíveis: " + disponiveis);
+
+        // --- EMPRESTAR LIVRO (imutável) ---
+        System.out.println("\n Emprestando o livro de ID 101 (Clean Code)...");
+        List<Book> afterLend = LibraryService.lendBookById(bookArrayList, 101);
+
+        System.out.println("\n Após o empréstimo:");
+        afterLend.forEach(b -> System.out.println(b.getId() +""+ b.getTitle() + " - disponível: " + b.isAvailable()));
+
+        // --- DEVOLVER LIVRO (imutável) ---
+        System.out.println("\n Devolvendo o livro de ID 101 (Clean Code)...");
+        List<Book> afterReturn = LibraryService.returnBookById(afterLend, 101);
+
+        System.out.println("\n Após a devolução:");
+        afterReturn.forEach(b -> System.out.println(b.getTitle() + " - disponível: " + b.isAvailable()));
+
+        // --- CONTAR DISPONIBILIDADE FINAL ---
+        long finalDisponiveis = LibraryService.countAvailableBooks((ArrayList<Book>) afterReturn);
+        System.out.println("\n Livros disponíveis no final: " + finalDisponiveis);
+
+
+/*
         // Journal objects
         Jornal jornal1 = new Jornal();
         jornal1.setId(201);
@@ -113,13 +140,7 @@ public class Main {
         mag3.setPeriodicity("Mensal");
 
         magazineArrayList.add(mag3);
-
-        Book book4 = new Book();
-        book1.setId(104);
-        book1.setTitle(""); //NullArgument
-        book1.setAuthor("Robert C. Martin");
-        book1.setDatePublish(LocalDate.of(2008, 8, 1));
-        book1.setEdition("1ª edição");
+*/
 
 
 

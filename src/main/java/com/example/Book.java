@@ -12,6 +12,15 @@ public class Book extends Document implements Availability {
     public Book() {
     }
 
+    public Book(Integer id, String title, String author, LocalDate datePublish, String edition, boolean available) {
+        super();
+        this.setId(id);
+        this.setTitle(title);
+        this.setAuthor(author);
+        this.setDatePublish(datePublish);
+        this.edition = edition;
+        this.available = available;
+    }
 
     public String getEdition() {
         return edition;
@@ -31,14 +40,14 @@ public class Book extends Document implements Availability {
     public void showDetails(){
      super.showDetails();
      System.out.println("Edition: "+getEdition());
-     System.out.println("Availability: "+(available ? "Not Available":"Available"));
+     System.out.println("Availability: "+(available ? "Avaliable":"Not Available"));
     }
 
 
     @Override
-    public void land() {
-        if(!available){
-            available = true;
+    public void lend() {
+        if(available){
+            available = false;
             System.out.println("Book :"+getTitle()+" being landed");
         }
         else

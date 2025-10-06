@@ -9,7 +9,15 @@ public class Document {
     private String author;
     private LocalDate datePublish;
 
+
     public Document() {
+    }
+
+    public Document(
+            Integer id,
+            String title,
+            String author,
+            LocalDate datePublish) {
     }
 
     public Integer getId() {
