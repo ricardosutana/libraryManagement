@@ -20,7 +20,7 @@ public class LibraryService {
                 .collect(Collectors.toList());
     }
 
-    // count  how many avaliable books exist
+    // count  how many available books exist
     public static long countAvailableBooks(ArrayList<Book> books) {
         return books.stream()
                 .filter(Book::isAvailable)
