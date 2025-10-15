@@ -22,7 +22,7 @@ public class Main {
         book1.setDatePublish(LocalDate.of(2008, 8, 1));
         book1.setEdition("1ª edição");
 
-        bookArrayList.add(book1);
+        //bookArrayList.add(book1);
 
 
         Book book2 = new Book();
@@ -50,24 +50,23 @@ public class Main {
                 libraryService, User.OperationType.ADD, book2);
         User admin2 = new User(1002, "Admin Ana", User.UserType.ADMIN,
                 libraryService, User.OperationType.ADD, book3);
+        User admin3 = new User(1003, "Admin Rick", User.UserType.ADMIN,
+                libraryService, User.OperationType.ADD, book1);
 
 
         Thread t1 = new Thread(admin1);
         Thread t2 = new Thread(admin2);
-
+        Thread t3 = new Thread(admin3);
 
         t1.start();
         t2.start();
-
-
+        t3.start();
 
         t1.join();
         t2.join();
-
+        t3.start();
 
         Thread.sleep(500);
-
-
 
     }
 }

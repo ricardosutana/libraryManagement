@@ -89,7 +89,7 @@ public class LibraryService {
         synchronized (books) {
             books.add(book);
             System.out.println(user.getName() + " add " + book.getTitle() + " into the book catalog. Total number of books : " + books.size() + " Books");
-            return true;
+           return true;
         }
     }
 
