@@ -1,10 +1,8 @@
 package com.example;
 
-import Interfaces.Availability;
-
 import java.time.LocalDate;
 
-public class Book extends Document implements Availability {
+public class Book extends Document  {
 
     private String edition;
     private boolean available = true;
@@ -34,8 +32,6 @@ public class Book extends Document implements Availability {
         this.edition = edition;
     }
 
-
-
     @Override
     public void showDetails(){
      super.showDetails();
@@ -44,27 +40,15 @@ public class Book extends Document implements Availability {
     }
 
 
-    @Override
-    public void lend() {
-        if(available){
-            available = false;
-            System.out.println("Book :"+getTitle()+" being landed");
-        }
-        else
-            System.out.println("The book"+getTitle()+"is not avaliable");
-    }
 
-    @Override
-    public void turnBack() {
-        if (available){
-            available = false;
-            System.out.println("Book : "+getTitle()+"being returned, Thank you");
-        }
-
-    }
-
-    @Override
     public boolean isAvailable() {
         return available;
     }
+
+    public  void setAvailable (boolean available){
+        this.available = available;
+    }
+
 }
+
+

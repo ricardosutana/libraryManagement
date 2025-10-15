@@ -7,65 +7,155 @@ import java.util.stream.Collectors;
 
 public class LibraryService {
 
-    /*
-    Class service that will handle with many book services.
-    this is only to pratice the lambda expressions
-    * */
+    private List<Book> books;
 
-
-    //Search books by author
-    public static List<Book> findBooksByAuthor(ArrayList<Book> books, String author) {
-        return books.stream()
-                .filter(book -> book.getAuthor().contains(author))
-                .collect(Collectors.toList());
+    public LibraryService(List<Book> books) {
+        this.books = books;
     }
 
-    // count  how many available books exist
-    public static long countAvailableBooks(ArrayList<Book> books) {
-        return books.stream()
-                .filter(Book::isAvailable)
-                .count();
+    public boolean lend(User user, Integer bookId) {
+        //validation phase
+        if (!user.getUserType().equals(User.UserType.BASIC)) {
+            System.out.println("[PERMISSION ERROR - ] " + user.getName() + ": Only ordinary users may lend a book.");
+            return false;
+        }
+        //search the book into the library bi its ID
+        Book singleBook = findBookById(bookId);
+
+        //if the book does not exist
+        if (singleBook == null) {
+            System.out.println(user.getName() +
+                    ": Book ID " + bookId + " not found!");
+            return false;
+        }
+        //sync the thread to avoid race conditions
+        synchronized (singleBook) {
+            if (!singleBook.isAvailable()) {
+                System.out.println(user.getName() + ": Book " + singleBook.getTitle() + " is with another user. Wait your time!");
+                return false;
+            }
+
+            singleBook.setAvailable(false); //change the availability of the book
+            System.out.println(user.getName() + " book lended with success: " + singleBook.getTitle());
+            return true;
+        }
     }
 
-    // lend books by
-    public static List<Book> lendBookById(List<Book> books, Integer id) {
-        return books.stream()
-                .map(book -> {
-                    //find a book by it's ID. If exist, create a new instance to respect the immutability rule on stream.
-                    if (Objects.equals(book.getId(), id) && book.isAvailable()) { //if a match between Id's occurs and the book is not borrowed.
-                        return new Book(
-                                book.getId(),
-                                book.getTitle(),
-                                book.getAuthor(),
-                                book.getDatePublish(),
-                                book.getEdition(),
-                                false
-                        );
-                    } else {
-                        return book;
-                    }
-                })
-                .collect(Collectors.toList());
+    public boolean turnBack(User user, Integer bookId) {
+        //validatiom phase
+        if (!user.getUserType().equals(User.UserType.BASIC)) {
+            System.out.println( user.getName() + ": Only ordinary users can return a book.");
+            return false;
+        }
+
+        //search book into the library
+        Book singleBook = findBookById(bookId);
+
+        if (singleBook == null) {
+            System.out.println(user.getName() + ": Book ID " + bookId + " not found");
+            return false;
+        }
+
+        //sync the thread to avoid race conditions
+        synchronized (singleBook) {
+            if (singleBook.isAvailable()) {
+                System.out.println( user.getName() + ": Book" + singleBook.getTitle() + "is available for you!");
+                return false;
+            }
+
+
+            singleBook.setAvailable(true); //change the availability
+            System.out.println(user.getName() +" returned the book: '" + singleBook.getTitle() + "' - Thank you!.");
+            return true;
+        }
+
+
     }
 
-    // return a book by ID
-    public static List<Book> returnBookById(List<Book> books, Integer id) {
-        return books.stream()
-                .map(book -> {
-                    //find a book by it's ID. If exist, create a new instance to respect the immutability rule on stream.
-                    if (Objects.equals(book.getId(), id) && !book.isAvailable()) {//if a match between Id's occurs and the book is borrowed.
-                        return new Book(
-                                book.getId(),
-                                book.getTitle(),
-                                book.getAuthor(),
-                                book.getDatePublish(),
-                                book.getEdition(),
-                                true // book returned
-                        );
-                    } else {
-                        return book;
-                    }
-                })
-                .collect(Collectors.toList());
+    public boolean add(User user, Book book) {
+        //validation phase
+        if (!user.getUserType().equals(User.UserType.ADMIN)) {
+            System.out.println(user.getName() +": Permission denied - Only ADMINISTRATOR are able to add new book into the library.");
+            return false;
+        }
+
+
+        if (findBookById(book.getId()) != null) {
+            System.out.println(user.getName() +": Book ID " + book.getId() + " Already exist!");
+            return false;
+        }
+
+        //sync the thread to avoid race conditions
+        synchronized (books) {
+            books.add(book);
+            System.out.println(user.getName() + " add " + book.getTitle() + " into the book catalog. Total number of books : " + books.size() + " Books");
+            return true;
+        }
     }
+
+    public boolean remove(User user, Integer bookId) {
+        //validation phase
+        if (!user.getUserType().equals(User.UserType.ADMIN)) {
+            System.out.println( user.getName() + ": Permission denied - Only ADMINISTRATOR are able to add new book into the library.");
+            return false;
+        }
+
+       //find book by ID
+        Book singleBook = findBookById(bookId);
+
+        if (singleBook == null) {
+            System.out.println(user.getName() + ": Book ID " + bookId + " not found!");
+            return false;
+        }
+
+        //is the book available?
+        if (!singleBook.isAvailable()) {
+            System.out.println(user.getName() + ": The book: " + singleBook.getTitle() + "is not available now. Wait the return to remove from catalog!");
+            return false;
+        }
+
+        //sync the thread to avoid race conditions
+        synchronized (books) {
+            books.remove(singleBook);
+            System.out.println(user.getName() +" removed the book " + singleBook.getTitle() +" from the library catolog. Total books: " + books.size() + " books");
+            return true;
+        }
+    }
+
+    public List<Book> findBooksByAuthor(String author) {
+        synchronized (books) {
+            return books.stream()
+                    .filter(book -> book.getAuthor().toLowerCase()
+                            .contains(author.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+    }
+
+    public long countAvailableBooks() {
+        synchronized (books) {
+            return books.stream()
+                    .filter(Book::isAvailable)
+                    .count();
+        }
+    }
+
+    public List<Book> listAllBooks() {
+        //sync the thread to avoid race conditions
+        synchronized (books) {
+            return new ArrayList<>(books);
+        }
+    }
+
+    private Book findBookById(Integer id) {
+        //sync the thread to avoid race conditions
+        synchronized (books) {
+            for (Book book : books) {
+                if (book.getId().equals(id)) {
+                    return book;
+                }
+            }
+        }
+        return null;
+    }
+
 }

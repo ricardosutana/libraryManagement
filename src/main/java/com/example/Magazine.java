@@ -1,8 +1,8 @@
 package com.example;
 
-import Interfaces.Availability;
 
-public class Magazine extends Document implements Availability {
+
+public class Magazine extends Document  {
     private String periodicity;
     private boolean available = true;
 
@@ -27,7 +27,7 @@ public class Magazine extends Document implements Availability {
         System.out.println("Periodicity: "+getPeriodicity());
 
     }
-    @Override
+
     public void lend() {
         if(!available){
             available = true;
@@ -37,17 +37,8 @@ public class Magazine extends Document implements Availability {
             System.out.println("Magazine"+getTitle()+"is not avaliable");
     }
 
-    @Override
-    public void turnBack() {
-        if (available){
-            available = false;
-            System.out.println("Magazine : "+getTitle()+"being returned, Thank you");
-        }
+
 
     }
 
-    @Override
-    public boolean isAvailable() {
-        return available;
-    }
-}
+
