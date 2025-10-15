@@ -43,6 +43,7 @@ public class User implements Runnable {
         this.registration = registration;
         this.name = name;
         this.userType= userType;
+        this.libraryService = libraryService;
         this.operationType=operationType;
         this.bookId = bookId;
     }
@@ -133,7 +134,7 @@ public class User implements Runnable {
     private void turnbackBook() {
         System.out.println( name + " want to turnback the book ID: " + bookId);
 
-        boolean success = libraryService.remove(this, bookId);
+        boolean success = libraryService.turnBack(this, bookId);
 
         if (!success) {
             System.out.println("Operation failed for user: " + name);

@@ -32,7 +32,7 @@ public class Main {
         book2.setDatePublish(LocalDate.of(2018, 1, 6));
         book2.setEdition("3ª edição");
 
-        bookArrayList.add(book2);
+
 
         Book book3 = new Book();
         book3.setId(103);
@@ -41,7 +41,7 @@ public class Main {
         book3.setDatePublish(LocalDate.of(2019, 4, 12));
         book3.setEdition("11ª edição");
 
-        bookArrayList.add(book3);
+
 
         LibraryService libraryService = new LibraryService(bookArrayList);
 
@@ -50,21 +50,20 @@ public class Main {
                 libraryService, User.OperationType.ADD, book2);
         User admin2 = new User(1002, "Admin Ana", User.UserType.ADMIN,
                 libraryService, User.OperationType.ADD, book3);
-        User admin3 = new User(1003, "Admin Paulo", User.UserType.ADMIN,
-                libraryService, User.OperationType.ADD, book1);
+
 
         Thread t1 = new Thread(admin1);
         Thread t2 = new Thread(admin2);
-        Thread t3 = new Thread(admin3);
+
 
         t1.start();
         t2.start();
-        t3.start();
+
 
 
         t1.join();
         t2.join();
-        t3.join();
+
 
         Thread.sleep(500);
 
