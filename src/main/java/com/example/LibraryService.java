@@ -68,4 +68,7 @@ public class LibraryService {
                 })
                 .collect(Collectors.toList());
     }
+    public void foo(){
+        //nothig here. just test
+    }
 }
